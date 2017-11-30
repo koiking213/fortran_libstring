@@ -8,6 +8,20 @@ module libstring
   interface assignment(=)
     module procedure assignment_char
   end interface
+  interface operator(==)
+    module procedure equal_string_string
+    module procedure equal_string_character
+    module procedure equal_character_string
+  end interface
+  interface operator(/=)
+    module procedure not_equal_string_string
+    module procedure not_equal_string_character
+    module procedure not_equal_character_string
+  end interface
+  interface operator(*)
+    module procedure mult_string_int
+    module procedure mult_int_string
+  end interface
 contains
   function substr(this,begin,end)
     class(string) :: this
@@ -40,4 +54,64 @@ contains
     character(*), intent(inout) :: iomsg  ! define if iostat non zero.
     print *,dtv%content
   end subroutine
+
+  function mult_string_int(a,b) result(mult)
+    type(string),allocatable :: mult
+    type(string),intent(in) :: a
+    integer,intent(in) :: b
+    allocate(mult)
+    allocate(character(len(a%content)*b) :: mult%content)
+    mult%content = a%content
+    do i=2,b
+      mult%content = a%content // mult%content
+    end do
+  end function
+  function mult_int_string(b,a) result(mult)
+    type(string),allocatable :: mult
+    type(string),intent(in) :: a
+    integer,intent(in) :: b
+    allocate(mult)
+    allocate(character(len(a%content)*b) :: mult%content)
+    mult%content = a%content
+    do i=2,b
+      mult%content = a%content // mult%content
+    end do
+  end function
+
+  function equal_string_character(a,b) result(r)
+    logical :: r
+    type(string),intent(in) :: a
+    character(*),intent(in) :: b
+    r = (a%content == b)
+  end function
+  function equal_string_string(a,b) result(r)
+    logical :: r
+    type(string),intent(in) :: a,b
+    r = (a%content == b%content)
+  end function
+  function equal_character_string(a,b) result(r)
+    logical :: r
+    character(*),intent(in) :: a
+    type(string),intent(in) :: b
+    r = (a == b%content)
+  end function
+  function not_equal_string_character(a,b) result(r)
+    logical :: r
+    type(string),intent(in) :: a
+    character(*),intent(in) :: b
+    r = (a%content /= b)
+  end function
+  function not_equal_string_string(a,b) result(r)
+    logical :: r
+    type(string),intent(in) :: a,b
+    r = (a%content /= b%content)
+  end function
+  function not_equal_character_string(a,b) result(r)
+    logical :: r
+    character(*),intent(in) :: a
+    type(string),intent(in) :: b
+    r = (a /= b%content)
+  end function
+
+
 end
