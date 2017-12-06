@@ -4,7 +4,10 @@ module libstring
   contains
     procedure :: at,substr,write_formatted
     generic :: write(formatted) => write_formatted
-  end type
+ end type string
+ interface string
+    module procedure string_constructor
+ end interface string
   interface assignment(=)
     module procedure assignment_char
   end interface
@@ -23,6 +26,10 @@ module libstring
     module procedure mult_int_string
   end interface
 contains
+  type(string) function string_constructor(c) result(r)
+    character(*) :: c
+    r%content = c
+  end function string_constructor
   function substr(this,begin,end)
     class(string) :: this
     character(:),allocatable :: substr
