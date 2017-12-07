@@ -36,6 +36,7 @@ contains
     integer,value :: begin, end
     optional :: begin, end
     if (.not.present(begin)) begin = 1
+    if (.not.present(end)) end = len(this%content)
     ! at least gcc-7.2.0 supports allocatable assignment
     substr = this%content(begin:end)
   end function
