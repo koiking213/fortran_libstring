@@ -1,5 +1,5 @@
 use libstring
 type(string)::s
-s = 'aiueo'
+s = 'pass'
 print *,s%content
 end
