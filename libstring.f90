@@ -2,8 +2,9 @@ module libstring
   type string
     character(:),allocatable::content
   contains
-    procedure :: at,substr,write_formatted
+    procedure :: at,substr,write_formatted,find_char,find_string
     generic :: write(formatted) => write_formatted
+    generic :: find => find_char, find_string
  end type string
  interface string
     module procedure string_constructor
@@ -45,7 +46,26 @@ contains
     class(string) :: this
     integer,intent(in) :: index
     at = this%content(index:index)
-  end function
+  end function at
+
+  integer function find_char(this,char) result(r)
+    class(string) :: this
+    character(*),intent(in) :: char
+    r = -1
+    if (len(char) > len(this%content)) return ! r = -1
+    do i=1, len(this%content)-len(char)+1
+       if (this%content(i:i+len(char)-1) == char) then
+          r = i
+          return
+       end if
+    end do
+  end function find_char
+
+  integer function find_string(this,str) result(r)
+    class(string) :: this
+    class(string), intent(in) :: str
+    r = find_char(this, str%content)
+  end function find_string
 
   subroutine assignment_char(this,s)
     class(string),intent(out) :: this
@@ -120,6 +140,4 @@ contains
     type(string),intent(in) :: b
     r = (a /= b%content)
   end function
-
-
 end

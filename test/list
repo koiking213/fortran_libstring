@@ -6,3 +6,4 @@ test_string_mult.f90
 test_string_not_equal.f90
 test_string_print.f90
 test_string_substr.f90
+test_string_find.f90
